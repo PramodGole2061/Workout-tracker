@@ -39,6 +39,22 @@ const getWorkoutById = async (req, res) =>{
 const createWorkout = async (req, res) =>{ // async because we are using await inside the function
     const {title, load, reps} = req.body; // extract title, load, reps from the request body
     
+    // to handle error for missing fields by showing which fields are missing to the user
+    let emptyFields = []; // array to keep track of any missing fields
+    if(!title){
+        emptyFields.push('title');
+    }
+    if(!load){
+        emptyFields.push('load');
+    }
+    if(!reps){
+        emptyFields.push('reps');
+    }
+
+    if(emptyFields.length > 0){
+        return res.status(400).json({error: 'please fill in all the fields.', emptyFields}); // send back error message with status 400 (Bad Request) if any fields are missing
+    }
+
     try{
         const workout = await workoutModel.create({title, load, reps}); // create a new workout document in the database
         //await is used to wait for the create operation to complete

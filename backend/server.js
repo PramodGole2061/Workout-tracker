@@ -1,8 +1,12 @@
 require('dotenv').config(); //load environment variables from .env file
 
 const express = require('express');
+
+// importing files that contain routes to register them in the server.js
 //workoutRoutes is imported to use the route handlers defined in workouts.js
 const workoutRoutes = require('./routes/workouts');
+//userRoutes
+const userRoutes = require('./routes/users');
 
 //mongoose is required to connect to MongoDB database
 const mongoose = require('mongoose');
@@ -19,10 +23,13 @@ app.use((req, res, next) => {
 });
 
 
-
+//Registering routes with the express app
 // routes: after receiving a request, send a response back to the client:
 // localhost: 4000/api/workouts/ will be handled by the workoutRoutes
+//For workout related routes
 app.use('/api/workouts',workoutRoutes)
+//For user related routes
+app.use('/api/users', userRoutes);
 
 //connect to MongoDB database using mongoose
 mongoose.connect(process.env.MONGODB_URI)
