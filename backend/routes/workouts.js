@@ -11,8 +11,15 @@ const {
     updateWorkout
 } = require('..//controllers/workoutControllers'); // import controller functions
 
+const requireAuth = require('../middleware/requireAuth')
+
 // here router is created to define route handlers separately, it is the main object to define routes
 const router = express.Router();
+
+//this line will call the requireAuth function which will check user's token to see if the user
+// is authorized or not. If the user is not authorized then it will respond with one of two errors.
+//otherwise it will hit next(), which means one of the routes below will be reached
+router.use(requireAuth)
 
 // different route handlers for workouts
 // get route handler to fetch all workouts

@@ -31,7 +31,7 @@ userModel.statics.signup = async function(email, password) { //since we are usin
     }
     //check strength of password
     if(!validator.isStrongPassword(password)){
-        throw Error('NOt a strong password.')
+        throw Error('Not a strong password.')
     }
 
     const exists = await this.findOne({email}); //this refers to the this model itself
@@ -52,6 +52,31 @@ userModel.statics.signup = async function(email, password) { //since we are usin
     //when we call signup method on userControllers, it will create a new user with hashed password and return new user object
     return user;
     
+}
+
+//static method for login similar to the signup
+userModel.statics.login = async function(email, password){
+    //check if email and password is empty
+    if(!email || !password){
+        throw Error('All Fields should be filled.')
+    }
+
+    //check if the email exists in the database
+    const user = await this.findOne({email});
+
+    if(!user){
+        throw Error('Email does not exist')
+    }
+
+    //Now compare the password with hashed password from database
+    const match = await bcrypt.compare(password, user.password); //user.password is hashed password from db
+
+    if(!match){
+        throw Error('Wrong password.')
+    }
+
+    //return json object that contains users email and password from db
+    return user;
 }
 
 module.exports = mongoose.model('User', userModel); // export the model to be used in other parts of the application

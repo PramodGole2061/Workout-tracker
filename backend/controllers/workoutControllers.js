@@ -4,7 +4,8 @@ const mongoose = require('mongoose'); // import mongoose to validate object ids 
 // controller function to get all workouts
 const getAllWorkouts = async (req, res) => {
     try{
-        const workouts = await workoutModel.find({}).sort({createdAt: -1}); // fetch all workouts from the database, sorted by createdAt in descending order
+        const user_id = req.user._id;
+        const workouts = await workoutModel.find({user_id}).sort({createdAt: -1}); // fetch all workouts from the database, sorted by createdAt in descending order
         res.status(200).json(workouts); // send back the workouts as response with status 200 (OK)
     }catch(error){
         res.status(500).json({error: error.message}); // send back error message with status 500 (Internal Server Error)
@@ -56,7 +57,8 @@ const createWorkout = async (req, res) =>{ // async because we are using await i
     }
 
     try{
-        const workout = await workoutModel.create({title, load, reps}); // create a new workout document in the database
+        const user_id = req.user._id;
+        const workout = await workoutModel.create({title, load, reps, user_id}); // create a new workout document in the database
         //await is used to wait for the create operation to complete
         res.status(200).json(workout); // send back the created workout as response with status 200 (OK)
     }catch(error){
